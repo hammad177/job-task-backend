@@ -28,7 +28,39 @@ class JobsRepository {
     });
   };
 
-  updateJob = ({ jobId, ...rest }: TJobsUpdate) => {};
+  updateJob = ({ jobId, ...rest }: TJobsUpdate) => {
+    return new Promise<TRepositoryPromise>(async (resolve, reject) => {
+      try {
+        const job = await JobsModel.findById(jobId);
+
+        if (!job)
+          return resolve({
+            success: false,
+            message: "Job not found",
+            data: null,
+          });
+
+        const updatedJob = await JobsModel.findByIdAndUpdate(
+          jobId,
+          { ...rest },
+          { new: true }
+        );
+
+        resolve({
+          success: true,
+          message: "Job Updated Successfully",
+          data: updatedJob,
+        });
+      } catch (error: any) {
+        console.log("Failed to update job", error?.message || error);
+        resolve({
+          success: false,
+          message: "Job Update Failed",
+          data: null,
+        });
+      }
+    });
+  };
 
   getJobs = () => {
     return new Promise<TRepositoryPromise>(async (resolve, reject) => {

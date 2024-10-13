@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { sendErrorResponse, sendResponse, throwErrorResponse } from "../utils";
 import JobsRepository from "../repository/jobs";
+import jobQueue from "../jobs/job";
 
 export const createJob = async (req: Request, res: Response) => {
   try {
@@ -12,6 +13,9 @@ export const createJob = async (req: Request, res: Response) => {
     });
 
     if (!success) return throwErrorResponse("BAD_REQUEST", message);
+
+    // Add job to background queue to get the food image from the unsplash
+    jobQueue.add({ jobId: data._id });
 
     sendResponse(res, message, data);
   } catch (error) {
