@@ -1,7 +1,7 @@
 import Bull from "bull";
 import JobsRepository from "../repository/jobs";
 import { REDIS } from "../constants";
-import { getUnsplashUrl } from "../utils";
+import { getUnsplashUrl, sendNotificationToAll } from "../utils";
 
 const jobQueue = new Bull("jobs", {
   redis: {
@@ -44,6 +44,7 @@ jobQueue.process(async (job) => {
       result: undefined,
     });
   } finally {
+    sendNotificationToAll({ jobId });
     console.log("Job Done", jobId);
   }
 });
