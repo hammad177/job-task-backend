@@ -65,7 +65,7 @@ class JobsRepository {
   getJobs = () => {
     return new Promise<TRepositoryPromise>(async (resolve, reject) => {
       try {
-        const jobs = await JobsModel.find();
+        const jobs = await JobsModel.find().sort({ createdAt: -1 });
 
         resolve({
           success: true,
