@@ -4,7 +4,7 @@ export const APP = {
 };
 
 export const DATABASE = {
-  URI: process.env.DATABASE_URI || "mongodb://localhost:27017",
+  URI: process.env.DATABASE_URI || "mongodb://localhost:27017/calo-jobs-db",
 };
 
 export const WHITELIST_IP = process.env.WHITELIST_IP || "";
