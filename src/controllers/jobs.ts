@@ -1,11 +1,16 @@
 import { Request, Response } from "express";
-import { sendErrorResponse, sendResponse, throwErrorResponse } from "../utils";
+import {
+  sendErrorResponse,
+  sendNotificationToAll,
+  sendResponse,
+  throwErrorResponse,
+} from "../utils";
 import JobsRepository from "../repository/jobs";
 import jobQueue from "../jobs/job";
 
 export const createJob = async (req: Request, res: Response) => {
   try {
-    const { title, description } = req.body;
+    const { clientId, title, description } = req.body;
 
     const { success, message, data } = await JobsRepository.createJob({
       title,
@@ -16,6 +21,12 @@ export const createJob = async (req: Request, res: Response) => {
 
     // Add job to background queue to get the food image from the unsplash
     jobQueue.add({ jobId: data._id });
+
+    // send notification to all users
+    sendNotificationToAll({
+      code: 201,
+      clientId,
+    });
 
     sendResponse(res, message, data);
   } catch (error) {
